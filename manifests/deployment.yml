@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: jagdevorgazurespringbootpoc 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jagdevorgazurespringbootpoc
+  template:
+    metadata:
+      labels:
+        app: jagdevorgazurespringbootpoc 
+    spec:
+      containers:
+        - name: jagdevorgazurespringbootpoc 
+          image: myacr001.azurecr.io/jagdevorgazurespringbootpoc
+          ports:
+          - containerPort: 8080
