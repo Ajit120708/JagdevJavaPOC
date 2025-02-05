@@ -13,16 +13,18 @@ COPY src ./src
 
 # Run Maven to build the project and create the JAR file
 RUN mvn clean package -DskipTests
-RUN ls -l target/
 
-# Set the working directory in the container
-WORKDIR /app
+# Refer to Maven build -> finalName
+ARG JAR_FILE=target/hello-world-spring-boot.jar
 
-# Copy the JAR file from the build image
-COPY --from=build /app/target/hello-world-spring-boot-*.jar /app/hello-world-spring-boot.jar
+# cd /opt/app
+WORKDIR /opt/app
+
+# cp target/spring-boot-web.jar /opt/app/app.jar
+COPY ${JAR_FILE} hello-world-spring-boot.jar
 
 # Expose the port your Spring Boot app runs on
 EXPOSE 8080
 
-# Run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "hello-world-spring-boot.jar"]
+# java -jar /opt/app/app.jar
+ENTRYPOINT ["java","-jar","hello-world-spring-boot.jar"]
