@@ -25,4 +25,4 @@ COPY --from=build /app/target/hello-world-spring-boot-*.jar /app/hello-world-spr
 EXPOSE 8080
 
 # Run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "/app/hello-world-spring-boot.jar"]
+ENTRYPOINT ["java", "-jar", "hello-world-spring-boot.jar"]
