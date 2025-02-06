@@ -13,6 +13,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 # Copy the built JAR file from the previous stage to the container
 COPY - from=build /app/target/hello-world-spring-boot.jar .
+EXPOSE 8080
 # Set the command to run the application
 CMD ["java", "-jar", "hello-world-spring-boot.jar"]
 
