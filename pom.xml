@@ -35,4 +35,5 @@
             </plugin>
         </plugins>
     </build>
+         <finalName>hello-world-spring-boot</finalName>
 </project>
