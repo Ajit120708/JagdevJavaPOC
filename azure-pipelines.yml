@@ -47,3 +47,47 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+   
+    - task: PublishPipelineArtifact@1
+      inputs:
+        artifactName: 'manifests'
+        path: 'manifests'
+
+  - stage: Deploy
+    displayName: Deploy to AKS from ACR
+    dependsOn: Build
+    jobs:
+    - deployment: Deploy
+      displayName: Deploy job
+      pool:
+        vmImage: $(vmImageName)
+      environment: 'myenv.aksnamespace' #customize with your environment
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: DownloadPipelineArtifact@2
+              inputs:
+                artifactName: 'manifests'
+                downloadPath: '$(System.ArtifactsDirectory)/manifests'
+
+            - task: KubernetesManifest@1
+              displayName: Create imagePullSecret
+              inputs:
+                action: 'createSecret'
+                connectionType: 'kubernetesServiceConnection'
+                kubernetesServiceConnection: 'myapp-default' #customize for your Kubernetes service connection
+                secretType: 'dockerRegistry'
+                secretName: '$(imagePullSecret)'
+                dockerRegistryEndpoint: '$(dockerRegistryServiceConnection)'
+
+            - task: KubernetesManifest@1
+              displayName: Deploy to Kubernetes cluster
+              inputs:
+                action: 'deploy'
+                connectionType: 'kubernetesServiceConnection'
+                kubernetesServiceConnection: 'myapp-default' #customize for your Kubernetes service connection
+                manifests: |
+                  $(Pipeline.Workspace)/manifests/aks-deploy-from-acr.yaml
+                containers: '$(containerRegistry)/$(imageRepository):$(tag)'
+                imagePullSecrets: '$(imagePullSecret)'
