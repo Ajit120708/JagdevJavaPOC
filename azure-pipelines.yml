@@ -73,7 +73,7 @@ stages:
                         action: deploy
                         connectionType: kubernetesServiceConnection
                         kubernetesServiceConnection: myapp-default
-                        manifests: >
+                        manifests: |
                           $(Pipeline.Workspace)/manifests/aks-deploy-from-acr.yaml
                         containers: '$(containerRegistry)/$(imageRepository):$(tag)'
                         imagePullSecrets: $(imagePullSecret)
